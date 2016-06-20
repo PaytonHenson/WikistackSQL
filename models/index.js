@@ -16,6 +16,17 @@ var Page = db.define('page', {
   content: { type: Sequelize.TEXT, allowNull: false },
   date: { type: Sequelize.DATE, defaultValue: Sequelize.NOW, validate: { isDate: true } },
   status: { type: Sequelize.ENUM('open', 'closed') },
+  tags: {type: Sequelize.ARRAY(Sequelize.STRING)}
+  }, {
+    classMethods: {
+      find: function(arrayOfTags) {
+        return Page.findAll( {where: {
+          tags: {
+            $overlap: arrayOfTags
+          }
+        }});
+      }
+    }
   });
 
   Page.hook('beforeValidate', function(page){

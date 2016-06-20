@@ -21,7 +21,8 @@ router.post('/', function(req, res, next) {
 
       var page = Page.build({
         title: req.body.title,
-        content: req.body.content
+        content: req.body.content,
+        tags: req.body.tags.split(' ')
         // status: req.body.status
       });
 
@@ -42,12 +43,13 @@ router.get('/add', function(req, res) {
 });
 
 router.get('/:urlTitle', function (req, res, next) {
-  Page.findOne( {where: { urlTitle : req.params.urlTitle }})
-    .then(function(page) {
-      var locals = { title: page.title, content: page.content};
-      res.render('wikipage', locals);
+
+  Page.findOne( {where: { urlTitle : req.params.urlTitle }}).then(function(page) {
+    page.getAuthor().then(function(author) {
+      res.render('wikipage', {page: page, user: author});
     })
-    .catch(next);
+  }).catch(next);
+
 });
 
 router.post('/add', function(req, res) {
