@@ -9,7 +9,6 @@ var Page = db.define('page', {
   urlTitle: { 
     type: Sequelize.STRING, 
     allowNull: false, 
-    validate: { isUrl: true }, 
     get: function() {
       return '/wiki/' + this.getDataValue('urlTitle');
     }
@@ -17,6 +16,17 @@ var Page = db.define('page', {
   content: { type: Sequelize.TEXT, allowNull: false },
   date: { type: Sequelize.DATE, defaultValue: Sequelize.NOW, validate: { isDate: true } },
   status: { type: Sequelize.ENUM('open', 'closed') },
+  });
+
+  Page.hook('beforeValidate', function(page){
+    if (page.title) {
+      // Removes all non-alphanumeric characters from title
+      // And make whitespace underscore
+      page.urlTitle = page.title.replace(/\s+/g, '_').replace(/\W/g, '');
+    } else {
+      // Generates random 5 letter string
+      page.urlTitle = Math.random().toString(36).substring(2, 7);
+    }
   });
 
 var User = db.define('user', {
