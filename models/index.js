@@ -6,9 +6,9 @@ var db = new Sequelize('postgres://localhost:5432/wikistack', {
 
 var Page = db.define('page', {
   title: { type: Sequelize.STRING, allowNull: false },
-  urlTitle: { 
-    type: Sequelize.STRING, 
-    allowNull: false, 
+  urlTitle: {
+    type: Sequelize.STRING,
+    allowNull: false,
     get: function() {
       return '/wiki/' + this.getDataValue('urlTitle');
     }
