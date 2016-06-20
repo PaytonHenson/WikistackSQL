@@ -13,23 +13,28 @@ router.get('/', function(req, res) {
     })
 });
 
-router.post('/', function(req, res) {
+router.post('/', function(req, res, next) {
 
-    var page = Page.build({
+    User.findOrCreate({where: {name: req.body.name, email: req.body.email} })
+    .then(function(values){
+      var user = values[0];
+
+      var page = Page.build({
         title: req.body.title,
-        content: req.body.content,
-        status: req.body.status
-    });
+        content: req.body.content
+        // status: req.body.status
+      });
 
-    page.save()
-    .then(function(page){
-        res.redirect(page.urlTitle);
-    });
+      return page.save().then(function(page) {
+        return page.setAuthor(user);
+      });
+
+    })
+    .then(function(page) {
+      res.redirect(page.urlTitle);
+    })
+    .catch(next);
 });
-
-// router.get('/:urlTitle', function (req, res) {
-//   res.send(req.params.urlTitle);
-// })
 
 // Add pages
 router.get('/add', function(req, res) {

@@ -4,6 +4,7 @@ var path = require('path');
 var swig = require('swig');
 var bodyParser = require('body-parser');
 var wikiRouter = require('./routes/wiki');
+var usersRouter = require('./routes/user');
 var models = require('./models');
 
 var app = express();
@@ -23,10 +24,11 @@ app.engine('html', swig.renderFile);
 swig.setDefaults({cache: false});
 
 app.use('/wiki', wikiRouter);
+app.use('/users', usersRouter);
 
-models.User.sync({})
+models.User.sync() // { force: true }
 .then(function () {
-    return models.Page.sync({})
+    return models.Page.sync()
 })
 .then(function () {
     app.listen(3001, function () {
