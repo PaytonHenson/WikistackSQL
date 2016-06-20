@@ -6,4 +6,12 @@ router.get('/', function(req, res) {
   res.render('index');
 });
 
+router.post('/', function(req, res) {
+  res.render('index');
+});
+
+router.post('/add', function(req, res) {
+  res.render('index');
+});
+
 module.exports = router;
